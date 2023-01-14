@@ -12,14 +12,7 @@
           :transition="transition"
         >
           <template v-slot:activator>
-            <v-btn
-              v-model="fab"
-              color="#2F80ED"
-              width="68px"
-              height="68px"
-              dark
-              fab
-            >
+            <v-btn v-model="fab" :color="color" width="68px" height="68px" fab>
               <img
                 src="./assets/icons/quicks.svg"
                 width="18px"
@@ -36,6 +29,7 @@
 </template>
 
 <script>
+import style from "./assets/scss/_variables.scss";
 import FloatButton from "./components/FloatButton.vue";
 
 export default {
@@ -44,6 +38,7 @@ export default {
     FloatButton,
   },
   data: () => ({
+    color: style.primaryBlue,
     direction: "left",
     fab: false,
     fling: false,
@@ -60,13 +55,15 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  background-color: #262626;
-}
+@import "./assets/scss/_variables.scss";
 
-.v-speed-dial {
-  position: fixed;
-  bottom: 27px !important;
-  right: 24px !important;
+#app {
+  background-color: $bg-dark;
+
+  .v-speed-dial {
+    position: fixed;
+    bottom: 27px !important;
+    right: 24px !important;
+  }
 }
 </style>

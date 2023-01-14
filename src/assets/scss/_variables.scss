@@ -1,0 +1,39 @@
+$bg-dark: #262626;
+
+$colors: (
+    // primary colors
+    'primaryBlue': #2F80ED,
+    'primaryDarkGrey': #4F4F4F,
+    'primaryLightGrey': #828282,
+    'primarylavender': #E0E0E0,
+
+    // indicator colors
+    'indicatorDefault': #F2F2F2,
+    'indicatorApricot': #F8B76B,
+    'indicatorBlue': #8785FF,
+    'indicatorRed': #EB5757,
+    'indicatorOrange': #F2C94C,
+
+    // chat colors
+    'chatOasis': #FCEED3,
+    'chatOrange': #E5A443,
+    'chatLigtPurple': #EEDCFF,
+    'chatDarkPurple': #9B51E0,
+    'chatLightGreen': #D2F2EA,
+    'chatGreen': #43B78D,
+
+    // sticker colors
+    'stickerCyan': #E9F3FF,
+    'stickerPeach': #FDCFA4,
+    'stickerTequila': #F9E9C3,
+    'stickerMint': #AFEBDB,
+    'stickerGreen': #CBF1C2,
+    'stickerLightBlue': #CFCEF9,
+    'stickerPink': #F9E0FD,
+);
+
+:export {
+    @each $key, $value in $colors {
+      #{unquote($key)}: $value;
+    }
+}

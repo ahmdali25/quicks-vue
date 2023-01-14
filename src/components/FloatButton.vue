@@ -7,13 +7,13 @@
       :color="color"
       class="ml-4"
       @click.stop="handleShow"
-      :style="isOpen ? 'box-shadow: -15px 0px #4F4F4F' : ''"
+      :style="{ 'box-shadow': isOpen ? '-15px 0px #4F4F4F' : '' }"
     >
       <img
         :src="
           isOpen
             ? getSrc
-            : require(`../assets/icons/${this.iconName.toLowerCase()}.svg`)
+            : require(`../assets/icons/${iconName.toLowerCase()}.svg`)
         "
         width="24px"
         :alt="`${iconName} Icon`"
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import style from "../assets/scss/_variables.scss";
+
 export default {
   name: "FloatButton",
   props: {
@@ -35,20 +37,20 @@ export default {
     isOpen: false,
     getSrc: "",
     // default
-    color: "#F2F2F2",
+    color: style.indicatorDefault,
   }),
   watch: {
     isOpen: {
       handler: function (val) {
         if (val) {
           if (this.iconName == "Inbox") {
-            this.color = "#F8B76B";
+            this.color = style.indicatorApricot;
           } else {
-            this.color = "#8785FF";
+            this.color = style.indicatorBlue;
           }
           this.getSrc = require(`../assets/icons/${this.iconName.toLowerCase()}-white.svg`);
         } else {
-          this.color = "#F2F2F2";
+          this.color = style.indicatorDefault;
         }
       },
     },
