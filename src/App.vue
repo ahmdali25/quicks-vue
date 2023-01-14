@@ -1,56 +1,72 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
     <v-main>
-      <HelloWorld />
+      <v-container>
+        <v-speed-dial
+          v-model="fab"
+          :top="top"
+          :bottom="bottom"
+          :right="right"
+          :left="left"
+          :direction="direction"
+          :transition="transition"
+        >
+          <template v-slot:activator>
+            <v-btn
+              v-model="fab"
+              color="#2F80ED"
+              width="68px"
+              height="68px"
+              dark
+              fab
+            >
+              <img
+                src="./assets/icons/quicks.svg"
+                width="18px"
+                alt="Quicks Logo"
+              />
+            </v-btn>
+          </template>
+          <FloatButton icon-name="Inbox" />
+          <FloatButton icon-name="Task" />
+        </v-speed-dial>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import FloatButton from "./components/FloatButton.vue";
 
 export default {
   name: "App",
-
   components: {
-    HelloWorld,
+    FloatButton,
   },
-
   data: () => ({
-    //
+    direction: "left",
+    fab: false,
+    fling: false,
+    hover: false,
+    tabs: null,
+    top: false,
+    right: true,
+    bottom: true,
+    left: false,
+    transition: "slide-x-reverse-transition",
+    showQuick: true,
   }),
 };
 </script>
+
+<style lang="scss">
+#app {
+  background-color: #262626;
+}
+
+.v-speed-dial {
+  position: fixed;
+  bottom: 27px !important;
+  right: 24px !important;
+}
+</style>
