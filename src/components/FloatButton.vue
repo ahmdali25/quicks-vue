@@ -7,6 +7,8 @@
       :color="color"
       class="ml-4"
       @click.stop="handleShow"
+      v-bind="attrs"
+      v-on="on"
       :style="{ 'box-shadow': isOpen ? '-15px 0px #4F4F4F' : '' }"
     >
       <img
@@ -31,6 +33,12 @@ export default {
     iconName: {
       type: String,
       required: true,
+    },
+    attrs: {
+      type: String,
+    },
+    on: {
+      type: Object,
     },
   },
   data: () => ({
@@ -58,6 +66,7 @@ export default {
   methods: {
     handleShow() {
       this.isOpen = !this.isOpen;
+      this.$emit("handleClick");
     },
   },
 };
