@@ -19,6 +19,7 @@
     "vuetify": "^3.6.8"
   },
   "devDependencies": {
+    "@mdi/js": "^7.4.47",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
     "@vitejs/plugin-vue": "^5.0.4",

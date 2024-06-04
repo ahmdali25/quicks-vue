@@ -2,6 +2,7 @@
 import IconInbox from '@/assets/icons/IconInbox.vue'
 import IconTask from '@/assets/icons/IconTask.vue'
 import BaseDialog from '@/components/BaseDialog.vue'
+import { mdiMagnify } from '@mdi/js'
 import { ref } from 'vue'
 
 const isTaskOpen = ref<boolean>(false)
@@ -61,7 +62,7 @@ const handleShowDialog = (name: string) => {
         <v-row justify="center">
           <v-col cols="11">
             <v-text-field
-              append-inner-icon="mdi-magnify"
+              :append-inner-icon="mdiMagnify"
               label="Search"
               variant="outlined"
               density="compact"
