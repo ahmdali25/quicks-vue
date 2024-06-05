@@ -5,55 +5,55 @@ import IconTask from '@/assets/icons/IconTask.vue'
 import BaseDialog from '@/components/BaseDialog.vue'
 import { mdiMagnify } from '@mdi/js'
 import { reactive, ref } from 'vue'
+import useMessages from '@/composables/useMessages'
 import { useFormatDate } from '@/utils/useFormatDate'
 
 const isTaskOpen = ref<boolean>(false)
 const isInboxOpen = ref<boolean>(false)
-const isLoading = ref<boolean>(true)
+// const isLoading = ref<boolean>(true)
 
-const messages = reactive([
-  {
-    group: '109220-Naturalization',
-    date: new Date('2022-03-25'),
-    user: 'Cameron Phillips',
-    message: 'Please check this out!',
-    isGroup: true,
-    participants: 3
-  },
-  {
-    group: 'Jeannette Moraima Guaman Chamba (Hutto I-589) [ Hutto Follow Up - Brief Service ]',
-    date: new Date(),
-    user: 'Ellen',
-    message: 'Hey, please read.!',
-    isGroup: true,
-    participants: 3
-  },
-  {
-    group: '8405-Diana SALAZAR MUNGUIA',
-    date: new Date(),
-    user: 'Cameron Phillips',
-    message: 'I understand your initial concerns and thats very valid, Elizabeth. But you ...',
-    isGroup: true,
-    participants: 3
-  }
-])
+// const messages = reactive([
+//   {
+//     group: '109220-Naturalization',
+//     date: new Date('2022-03-25'),
+//     user: 'Cameron Phillips',
+//     message: 'Please check this out!',
+//     isGroup: true,
+//     participants: 3
+//   },
+//   {
+//     group: 'Jeannette Moraima Guaman Chamba (Hutto I-589) [ Hutto Follow Up - Brief Service ]',
+//     date: new Date(),
+//     user: 'Ellen',
+//     message: 'Hey, please read.!',
+//     isGroup: true,
+//     participants: 3
+//   },
+//   {
+//     group: '8405-Diana SALAZAR MUNGUIA',
+//     date: new Date(),
+//     user: 'Cameron Phillips',
+//     message: 'I understand your initial concerns and thats very valid, Elizabeth. But you ...',
+//     isGroup: true,
+//     participants: 3
+//   }
+// ])
 
-const handleShowDialog = (name: string) => {
+const { groupedMessages, fetchMessages, isLoading } = useMessages()
+
+const handleShowDialog = async (name: string) => {
   if (name == 'task') {
     isTaskOpen.value = !isTaskOpen.value
   }
 
   if (name == 'inbox') {
     isInboxOpen.value = !isInboxOpen.value
+    await fetchMessages()
   }
-
-  setTimeout(() => {
-    isLoading.value = false
-  }, 1000)
 }
 
 const lastIndex = (index: number) => {
-  if (messages.length - (index + 1) === 0) {
+  if (groupedMessages.length - (index + 1) === 0) {
     return true
   } else {
     return false
@@ -122,7 +122,7 @@ const lastIndex = (index: number) => {
           <p class="mt-4">Loading Chats ...</p>
         </div>
 
-        <div v-else v-for="(message, index) in messages" :key="index">
+        <div v-else v-for="(group, index) in groupedMessages" :key="index">
           <v-row>
             <v-col cols="1">
               <div class="wrapper">
@@ -137,14 +137,20 @@ const lastIndex = (index: number) => {
             <v-col cols="11">
               <v-row justify="space-between">
                 <v-col class="ml-4">
-                  <span class="text-primary-blue font-weight-bold">{{ message.group }} </span>
+                  <span class="text-primary-blue font-weight-bold">{{ group[0].groupName }} </span>
                 </v-col>
                 <v-col>
-                  <span>{{ useFormatDate(message.date) }}</span>
+                  <span>{{ useFormatDate(group[0].date) }}</span>
                 </v-col>
               </v-row>
-              <p class="font-weight-bold text-primary-dark-gray ml-4">{{ message.user }} :</p>
-              <p class="ml-4">{{ message.message }}</p>
+              <template v-for="(message, index) in group" :key="index">
+                <template v-if="index === 0">
+                  <p class="font-weight-bold text-primary-dark-gray ml-4">
+                    {{ message.first_name }} {{ message.last_name }}
+                  </p>
+                  <p class="ml-4">{{ message.message }}</p>
+                </template>
+              </template>
             </v-col>
           </v-row>
           <v-row v-if="!isLoading && !lastIndex(index)" justify="center">
