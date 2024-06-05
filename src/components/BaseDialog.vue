@@ -14,7 +14,7 @@ const props = defineProps<Props>()
     width="500px"
     height="500px"
   >
-    <v-card width="500px" height="500px" class="pt-4">
+    <v-card width="500px" height="500px" class="pt-4 pr-2">
       <slot></slot>
     </v-card>
   </v-dialog>

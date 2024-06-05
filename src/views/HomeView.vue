@@ -99,7 +99,7 @@ const lastIndex = (index: number) => {
     </v-speed-dial>
 
     <BaseDialog :show="isInboxOpen">
-      <v-container class="pt-0">
+      <v-container class="pt-0 container overflow-y-auto">
         <v-row justify="center">
           <v-col cols="12">
             <v-text-field
@@ -188,5 +188,22 @@ const lastIndex = (index: number) => {
 
 .filled-blue {
   background-color: #2f80ed;
+}
+
+.container::-webkit-scrollbar-track {
+  border: 1px solid #bdbdbd;
+  border-radius: 10px;
+  padding: 2px 0;
+  background-color: transparent;
+  border: none;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  border-radius: 30px;
+  background-color: #bdbdbd;
 }
 </style>
