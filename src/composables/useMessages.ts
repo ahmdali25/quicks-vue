@@ -1,4 +1,3 @@
-// src/composables/usePosts.ts
 import { computed, ref } from 'vue'
 import axios, { type AxiosResponse } from 'axios'
 
@@ -22,7 +21,7 @@ export default function useMessages() {
       response.data.data.forEach((user: any) => {
         messages.value.push({
           ...user,
-          groupName: `Group ${Math.floor(Math.random() * 5) + 1}`,
+          groupName: `Group ${Math.floor(Math.random() * 4) + 1}`,
           message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
           date: generateRandomDate(startDate, endDate)
         })

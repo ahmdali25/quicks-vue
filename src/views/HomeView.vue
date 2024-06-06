@@ -140,15 +140,15 @@ const lastIndex = (index: number) => {
                   <span class="text-primary-blue font-weight-bold">{{ group[0].groupName }} </span>
                 </v-col>
                 <v-col>
-                  <span>{{ useFormatDate(group[0].date) }}</span>
+                  <span class="text-body-2">{{ useFormatDate(group[0].date) }}</span>
                 </v-col>
               </v-row>
               <template v-for="(message, index) in group" :key="index">
                 <template v-if="index === 0">
-                  <p class="font-weight-bold text-primary-dark-gray ml-4">
+                  <p class="font-weight-bold text-body-2 text-primary-dark-gray ml-4">
                     {{ message.first_name }} {{ message.last_name }}
                   </p>
-                  <p class="ml-4">{{ message.message }}</p>
+                  <p class="ml-4 text-body-2">{{ message.message }}</p>
                 </template>
               </template>
             </v-col>
