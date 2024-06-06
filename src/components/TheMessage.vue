@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFormatDate } from '@/utils/useFormatDate'
+import { ref } from 'vue'
 
 interface Message {
   groupName: string
@@ -51,7 +52,10 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
       </template>
     </v-toolbar>
 
-    <v-card-text class="message overflow-y-auto" style="height: 90%; padding-bottom: 100px">
+    <v-card-text
+      class="message overflow-y-auto position-relative"
+      style="height: 90%; padding-bottom: 100px"
+    >
       <template v-for="(message, index) in props.data" :key="index">
         <v-row v-if="shouldDisplayDate(message, index)" justify="center">
           <v-col align-self="center">
@@ -76,7 +80,21 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
             </div>
           </v-col>
           <v-col class="ml-n7">
-            <v-icon icon="$dots" class="cursor-pointer"></v-icon>
+            <v-menu transition="slide-y-transition" content-class="menu">
+              <template v-slot:activator="{ props }">
+                <v-icon icon="$dots" class="cursor-pointer" v-bind="props"></v-icon>
+              </template>
+
+              <v-list density="compact">
+                <v-list-item class="text-primary-blue cursor-pointer">
+                  <v-list-item-title>Edit</v-list-item-title>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item class="text-indicator-red cursor-pointer">
+                  <v-list-item-title> Delete </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-col>
         </v-row>
       </template>
@@ -117,5 +135,15 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
 .message::-webkit-scrollbar-thumb {
   border-radius: 30px;
   background-color: #bdbdbd;
+}
+
+.menu .v-list {
+  box-shadow: none;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #bdbdbd;
+  padding: 0;
+  width: 100px;
+  margin-left: -80px;
 }
 </style>
