@@ -3,6 +3,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
+import { mdiMagnify, mdiArrowLeft, mdiClose, mdiDotsHorizontal } from '@mdi/js'
 
 const vuetify = createVuetify({
   components,
@@ -44,7 +45,13 @@ const vuetify = createVuetify({
   },
   icons: {
     defaultSet: 'mdi',
-    aliases,
+    aliases: {
+      ...aliases,
+      search: mdiMagnify,
+      close: mdiClose,
+      arrowLeft: mdiArrowLeft,
+      dots: mdiDotsHorizontal
+    },
     sets: {
       mdi
     }
