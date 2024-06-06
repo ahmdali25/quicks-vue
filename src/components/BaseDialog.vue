@@ -1,9 +1,9 @@
 <script setup lang="ts">
-interface Props {
+interface PropsDialog {
   show: boolean
 }
 
-const props = defineProps<Props>()
+const props = defineProps<PropsDialog>()
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const props = defineProps<Props>()
     width="500px"
     height="500px"
   >
-    <v-card width="500px" height="500px" class="pt-4 pr-2">
+    <v-card width="500px" height="500px" class="pt-4">
       <slot></slot>
     </v-card>
   </v-dialog>

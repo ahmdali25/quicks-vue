@@ -3,43 +3,17 @@ import IconInbox from '@/assets/icons/IconInbox.vue'
 import IconPerson from '@/assets/icons/IconPerson.vue'
 import IconTask from '@/assets/icons/IconTask.vue'
 import BaseDialog from '@/components/BaseDialog.vue'
-import { mdiMagnify } from '@mdi/js'
+import TheMessage from '@/components/TheMessage.vue'
 import { reactive, ref } from 'vue'
 import useMessages from '@/composables/useMessages'
 import { useFormatDate } from '@/utils/useFormatDate'
 
 const isTaskOpen = ref<boolean>(false)
 const isInboxOpen = ref<boolean>(false)
-// const isLoading = ref<boolean>(true)
-
-// const messages = reactive([
-//   {
-//     group: '109220-Naturalization',
-//     date: new Date('2022-03-25'),
-//     user: 'Cameron Phillips',
-//     message: 'Please check this out!',
-//     isGroup: true,
-//     participants: 3
-//   },
-//   {
-//     group: 'Jeannette Moraima Guaman Chamba (Hutto I-589) [ Hutto Follow Up - Brief Service ]',
-//     date: new Date(),
-//     user: 'Ellen',
-//     message: 'Hey, please read.!',
-//     isGroup: true,
-//     participants: 3
-//   },
-//   {
-//     group: '8405-Diana SALAZAR MUNGUIA',
-//     date: new Date(),
-//     user: 'Cameron Phillips',
-//     message: 'I understand your initial concerns and thats very valid, Elizabeth. But you ...',
-//     isGroup: true,
-//     participants: 3
-//   }
-// ])
+const isShowMessage = ref<boolean>(false)
 
 const { groupedMessages, fetchMessages, isLoading } = useMessages()
+let selectedMessage = reactive<string[]>([])
 
 const handleShowDialog = async (name: string) => {
   if (name == 'task') {
@@ -52,12 +26,21 @@ const handleShowDialog = async (name: string) => {
   }
 }
 
-const lastIndex = (index: number) => {
-  if (groupedMessages.length - (index + 1) === 0) {
+const lastIndex = (index: string) => {
+  if (groupedMessages.length - Number(index + 1) === 0) {
     return true
   } else {
     return false
   }
+}
+
+const handleShowMessage = (group: string[]) => {
+  selectedMessage = group
+  isShowMessage.value = true
+}
+
+const handleCloseMessage = () => {
+  isShowMessage.value = false
 }
 </script>
 
@@ -99,11 +82,11 @@ const lastIndex = (index: number) => {
     </v-speed-dial>
 
     <BaseDialog :show="isInboxOpen">
-      <v-container class="pt-0 container overflow-y-auto">
+      <v-container v-if="!isShowMessage" class="pt-0 container overflow-y-auto">
         <v-row justify="center">
           <v-col cols="12">
             <v-text-field
-              :append-inner-icon="mdiMagnify"
+              append-inner-icon="$search"
               label="Search"
               variant="outlined"
               density="compact"
@@ -123,7 +106,7 @@ const lastIndex = (index: number) => {
         </div>
 
         <div v-else v-for="(group, index) in groupedMessages" :key="index">
-          <v-row>
+          <v-row class="cursor-pointer" @click="handleShowMessage(group)">
             <v-col cols="1">
               <div class="wrapper">
                 <div class="circle filled position-absolute left-0">
@@ -140,11 +123,13 @@ const lastIndex = (index: number) => {
                   <span class="text-primary-blue font-weight-bold">{{ group[0].groupName }} </span>
                 </v-col>
                 <v-col>
-                  <span class="text-body-2">{{ useFormatDate(group[0].date) }}</span>
+                  <span class="text-body-2">{{
+                    useFormatDate(group[group.length - 1].date, 'withHour')
+                  }}</span>
                 </v-col>
               </v-row>
               <template v-for="(message, index) in group" :key="index">
-                <template v-if="index === 0">
+                <template v-if="index === group.length - 1">
                   <p class="font-weight-bold text-body-2 text-primary-dark-gray ml-4">
                     {{ message.first_name }} {{ message.last_name }}
                   </p>
@@ -160,6 +145,13 @@ const lastIndex = (index: number) => {
           </v-row>
         </div>
       </v-container>
+
+      <TheMessage
+        v-else
+        :show="isShowMessage"
+        @close="handleCloseMessage"
+        :data="selectedMessage"
+      />
     </BaseDialog>
   </main>
 </template>
