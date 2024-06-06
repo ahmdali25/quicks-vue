@@ -33,9 +33,17 @@ export default function useMessages() {
     }
   }
 
+  const sortedMessages = computed(() => {
+    return messages.value.slice().sort((a: { date: Date }, b: { date: Date }) => {
+      const dateA = new Date(a.date)
+      const dateB = new Date(b.date)
+      return dateA.getTime() - dateB.getTime()
+    })
+  })
+
   const groupedMessages = computed(() => {
     const groups: Record<string, any[]> = {}
-    messages.value.forEach((message: { groupName: string }) => {
+    sortedMessages.value.forEach((message: { groupName: string }) => {
       if (!groups[message.groupName]) {
         groups[message.groupName] = []
       }
