@@ -79,14 +79,14 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
           </v-col>
         </v-row>
         <p class="mt-1 font-weight-medium">{{ message.first_name }} {{ message.last_name }}</p>
-        <v-row>
-          <v-col cols="10">
-            <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: max-content">
+        <v-row justify="space-around">
+          <v-col sm="5" md="10" lg="7">
+            <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: 100%">
               {{ message.message }}
               <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
             </div>
           </v-col>
-          <v-col class="ml-n7">
+          <v-col>
             <v-menu transition="slide-y-transition" content-class="menu">
               <template v-slot:activator="{ props }">
                 <v-icon icon="$dots" class="cursor-pointer" v-bind="props"></v-icon>
