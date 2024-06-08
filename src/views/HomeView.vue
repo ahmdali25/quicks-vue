@@ -143,7 +143,7 @@ const handleCloseMessage = () => {
             </template>
             <template v-else>
               <template v-for="(message, index) in group" :key="index">
-                <v-col cols="1" align-self="center">
+                <v-col cols="1" align-self="center" class="ml-3 mr-n3">
                   <div class="circle filled-blue">
                     <IconPerson :style="{ fill: 'white', width: '12px' }" />
                   </div>
