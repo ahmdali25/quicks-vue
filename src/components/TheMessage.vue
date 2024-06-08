@@ -143,7 +143,10 @@ const handleSendMessage = () => {
                 </template>
 
                 <v-list density="compact">
-                  <v-list-item class="text-primary-blue cursor-pointer">
+                  <v-list-item
+                    v-if="message.first_name === 'You'"
+                    class="text-primary-blue cursor-pointer"
+                  >
                     <v-list-item-title>Edit</v-list-item-title>
                   </v-list-item>
                   <v-divider></v-divider>
