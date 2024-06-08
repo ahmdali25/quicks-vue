@@ -41,10 +41,17 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
       </template>
 
       <v-toolbar-title class="text-body-1">
-        <p class="text-primary-blue">{{ props.data[0].groupName }}</p>
-        <p class="font-weight-regular mt-n2">
-          {{ props.data.length }} Participant<span v-if="props.data.length > 1">s</span>
-        </p>
+        <template v-if="props.data[0].groupName">
+          <p class="text-primary-blue">{{ props.data[0].groupName }}</p>
+          <p class="font-weight-regular mt-n2">
+            {{ props.data.length }} Participant<span v-if="props.data.length > 1">s</span>
+          </p>
+        </template>
+        <template v-else>
+          <p class="text-primary-blue">
+            {{ props.data[0].first_name }} {{ props.data[0].last_name }}
+          </p>
+        </template>
       </v-toolbar-title>
 
       <template v-slot:append>

@@ -18,13 +18,23 @@ export default function useMessages() {
       const response: AxiosResponse<any> = await axios.get(
         'https://reqres.in/api/users?per_page=12'
       )
-      response.data.data.forEach((user: any) => {
-        messages.value.push({
+
+      let nonGroupMessageAdded = false
+
+      response.data.data.forEach((user: any, index: number) => {
+        const isGroup = nonGroupMessageAdded || index < response.data.data.length - 1 ? true : false
+        if (!isGroup) {
+          nonGroupMessageAdded = true
+        }
+
+        const message = {
           ...user,
-          groupName: `Group ${Math.floor(Math.random() * 4) + 1}`,
+          isGroup,
+          groupName: isGroup ? `Group ${Math.floor(Math.random() * 4) + 1}` : '',
           message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
           date: generateRandomDate(startDate, endDate)
-        })
+        }
+        messages.value.push(message)
       })
     } catch (error) {
       console.error('Error fetching data:', error)

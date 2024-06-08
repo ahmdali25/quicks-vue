@@ -107,36 +107,64 @@ const handleCloseMessage = () => {
 
         <div v-else v-for="(group, index) in groupedMessages" :key="index">
           <v-row class="cursor-pointer" @click="handleShowMessage(group)">
-            <v-col cols="1">
-              <div class="wrapper">
-                <div class="circle filled position-absolute left-0">
-                  <IconPerson :style="{ fill: '#676767', width: '12px' }" />
+            <template v-if="group[0].isGroup === true">
+              <v-col cols="1">
+                <div class="wrapper">
+                  <div class="circle filled position-absolute left-0">
+                    <IconPerson :style="{ fill: '#676767', width: '12px' }" />
+                  </div>
+                  <div class="circle filled-blue position-absolute right-0">
+                    <IconPerson :style="{ fill: 'white', width: '12px' }" />
+                  </div>
                 </div>
-                <div class="circle filled-blue position-absolute right-0">
-                  <IconPerson :style="{ fill: 'white', width: '12px' }" />
-                </div>
-              </div>
-            </v-col>
-            <v-col cols="11">
-              <v-row justify="space-between">
-                <v-col class="ml-4">
-                  <span class="text-primary-blue font-weight-bold">{{ group[0].groupName }} </span>
-                </v-col>
-                <v-col>
-                  <span class="text-body-2">{{
-                    useFormatDate(group[group.length - 1].date, 'withHour')
-                  }}</span>
-                </v-col>
-              </v-row>
-              <template v-for="(message, index) in group" :key="index">
-                <template v-if="index === group.length - 1">
-                  <p class="font-weight-bold text-body-2 text-primary-dark-gray ml-4">
-                    {{ message.first_name }} {{ message.last_name }}
-                  </p>
-                  <p class="ml-4 text-body-2">{{ message.message }}</p>
+              </v-col>
+              <v-col cols="11">
+                <v-row justify="space-between">
+                  <v-col class="ml-4">
+                    <span class="text-primary-blue font-weight-bold"
+                      >{{ group[0].groupName }}
+                    </span>
+                  </v-col>
+                  <v-col>
+                    <span class="text-body-2">{{
+                      useFormatDate(group[group.length - 1].date, 'withHour')
+                    }}</span>
+                  </v-col>
+                </v-row>
+                <template v-for="(message, index) in group" :key="index">
+                  <template v-if="index === group.length - 1">
+                    <p class="font-weight-bold text-body-2 text-primary-dark-gray ml-4">
+                      {{ message.first_name }} {{ message.last_name }}
+                    </p>
+                    <p class="ml-4 text-body-2">{{ message.message }}</p>
+                  </template>
                 </template>
+              </v-col>
+            </template>
+            <template v-else>
+              <template v-for="(message, index) in group" :key="index">
+                <v-col cols="1" align-self="center">
+                  <div class="circle filled-blue">
+                    <IconPerson :style="{ fill: 'white', width: '12px' }" />
+                  </div>
+                </v-col>
+                <v-col cols="11">
+                  <v-row justify="space-between">
+                    <v-col class="ml-4">
+                      <span class="text-primary-blue font-weight-bold"
+                        >{{ message.first_name }} {{ message.last_name }}
+                      </span>
+                    </v-col>
+                    <v-col>
+                      <span class="text-body-2">{{
+                        useFormatDate(group[group.length - 1].date, 'withHour')
+                      }}</span>
+                    </v-col>
+                  </v-row>
+                  <p class="ml-4 text-body-2">{{ message.message }}</p>
+                </v-col>
               </template>
-            </v-col>
+            </template>
           </v-row>
           <v-row v-if="!isLoading && !lastIndex(index)" justify="center">
             <v-col>
@@ -173,7 +201,6 @@ const handleCloseMessage = () => {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  text-align: center;
   line-height: 30px;
   display: flex;
   justify-content: center;
