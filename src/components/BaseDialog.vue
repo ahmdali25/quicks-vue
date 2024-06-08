@@ -1,9 +1,21 @@
 <script setup lang="ts">
+import { ref, onBeforeMount } from 'vue'
+
 interface PropsDialog {
   show: boolean
 }
 
 const props = defineProps<PropsDialog>()
+const isExtraLargeView = ref<boolean>(false)
+
+const handleResize = () => {
+  isExtraLargeView.value = window.innerWidth >= 1440
+}
+
+onBeforeMount(() => {
+  handleResize()
+  window.addEventListener('resize', handleResize)
+})
 </script>
 
 <template>
@@ -11,10 +23,14 @@ const props = defineProps<PropsDialog>()
     :model-value="props.show"
     transition="dialog-bottom-transition"
     hide-overlay
-    width="500px"
-    height="500px"
+    :width="isExtraLargeView ? '734px' : '500px'"
+    :height="isExtraLargeView ? '734px' : '500px'"
   >
-    <v-card width="500px" height="500px" class="pt-4">
+    <v-card
+      :width="isExtraLargeView ? '734px' : '500px'"
+      :height="isExtraLargeView ? '734px' : '500px'"
+      class="pt-4"
+    >
       <slot></slot>
     </v-card>
   </v-dialog>
@@ -23,7 +39,7 @@ const props = defineProps<PropsDialog>()
 <style scoped>
 .v-dialog {
   position: absolute;
-  bottom: 40px;
-  right: -650px;
+  bottom: 15px;
+  right: -51%;
 }
 </style>
