@@ -25,6 +25,8 @@ export default function useMessages() {
         const isGroup = nonGroupMessageAdded || index < response.data.data.length - 1 ? true : false
         if (!isGroup) {
           nonGroupMessageAdded = true
+          user.first_name = 'FastVisa'
+          user.last_name = 'Support'
         }
 
         const message = {
