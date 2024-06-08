@@ -3,10 +3,11 @@ import { useFormatDate } from '@/utils/useFormatDate'
 import { ref } from 'vue'
 
 interface Message {
+  isGroup: Boolean
   groupName: string
   first_name: string
   last_name: string
-  date: string
+  date: Date
   message: string
 }
 
@@ -15,6 +16,8 @@ interface PropsMessage {
 }
 
 const props = defineProps<PropsMessage>()
+const messages = ref<Message[]>(props.data)
+const inputMessage = ref<string>('')
 
 const emit = defineEmits<{
   (e: 'close', id: boolean): void
@@ -31,6 +34,18 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
   const previousMessage = props.data[index - 1]
   return useFormatDate(message.date) !== useFormatDate(previousMessage.date)
 }
+
+const handleSendMessage = () => {
+  messages.value.push({
+    isGroup: false,
+    groupName: '',
+    first_name: 'You',
+    last_name: '',
+    date: new Date(),
+    message: inputMessage.value
+  })
+  inputMessage.value = ''
+}
 </script>
 
 <template>
@@ -41,16 +56,14 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
       </template>
 
       <v-toolbar-title class="text-body-1">
-        <template v-if="props.data[0].groupName">
-          <p class="text-primary-blue">{{ props.data[0].groupName }}</p>
+        <template v-if="messages[0].groupName">
+          <p class="text-primary-blue">{{ messages[0].groupName }}</p>
           <p class="font-weight-regular mt-n2">
-            {{ props.data.length }} Participant<span v-if="props.data.length > 1">s</span>
+            {{ messages.length }} Participant<span v-if="messages.length > 1">s</span>
           </p>
         </template>
         <template v-else>
-          <p class="text-primary-blue">
-            {{ props.data[0].first_name }} {{ props.data[0].last_name }}
-          </p>
+          <p class="text-primary-blue">{{ messages[0].first_name }} {{ messages[0].last_name }}</p>
         </template>
       </v-toolbar-title>
 
@@ -63,7 +76,7 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
       class="message overflow-y-auto position-relative"
       style="height: 90%; padding-bottom: 100px"
     >
-      <template v-for="(message, index) in props.data" :key="index">
+      <template v-for="(message, index) in messages" :key="index">
         <v-row v-if="shouldDisplayDate(message, index)" justify="center">
           <v-col align-self="center">
             <v-divider class="border-sm bg-primary-gray" />
@@ -78,49 +91,94 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
             <v-divider class="border-sm bg-primary-gray" />
           </v-col>
         </v-row>
-        <p class="mt-1 font-weight-medium">{{ message.first_name }} {{ message.last_name }}</p>
-        <v-row justify="space-around">
-          <v-col sm="5" md="10" lg="7">
-            <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: 100%">
-              {{ message.message }}
-              <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
-            </div>
-          </v-col>
-          <v-col>
-            <v-menu transition="slide-y-transition" content-class="menu">
-              <template v-slot:activator="{ props }">
-                <v-icon icon="$dots" class="cursor-pointer" v-bind="props"></v-icon>
-              </template>
+        <p
+          class="mt-1 font-weight-medium"
+          :class="message.first_name === 'You' ? 'text-right' : 'text-left'"
+        >
+          {{ message.first_name }} {{ message.last_name }}
+        </p>
+        <v-row>
+          <template v-if="message.first_name === 'You'">
+            <v-col cols="4"></v-col>
+            <v-col cols="8">
+              <v-row>
+                <v-col cols="1">
+                  <v-menu transition="slide-y-transition" content-class="menu">
+                    <template v-slot:activator="{ props }">
+                      <v-icon icon="$dots" class="cursor-pointer" v-bind="props"></v-icon>
+                    </template>
 
-              <v-list density="compact">
-                <v-list-item class="text-primary-blue cursor-pointer">
-                  <v-list-item-title>Edit</v-list-item-title>
-                </v-list-item>
-                <v-divider></v-divider>
-                <v-list-item class="text-indicator-red cursor-pointer">
-                  <v-list-item-title> Delete </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
+                    <v-list density="compact">
+                      <v-list-item class="text-primary-blue cursor-pointer">
+                        <v-list-item-title>Edit</v-list-item-title>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                      <v-list-item class="text-indicator-red cursor-pointer">
+                        <v-list-item-title> Delete </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+                <v-col>
+                  <div class="bg-chat-light-purple rounded px-3 py-2 mt-1" style="width: 100%">
+                    {{ message.message }}
+                    <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </template>
+
+          <template v-else>
+            <v-col sm="5" md="10" lg="7">
+              <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: 100%">
+                {{ message.message }}
+                <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
+              </div>
+            </v-col>
+            <v-col>
+              <v-menu transition="slide-y-transition" content-class="menu">
+                <template v-slot:activator="{ props }">
+                  <v-icon icon="$dots" class="cursor-pointer" v-bind="props"></v-icon>
+                </template>
+
+                <v-list density="compact">
+                  <v-list-item class="text-primary-blue cursor-pointer">
+                    <v-list-item-title>Edit</v-list-item-title>
+                  </v-list-item>
+                  <v-divider></v-divider>
+                  <v-list-item class="text-indicator-red cursor-pointer">
+                    <v-list-item-title> Delete </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-col>
+          </template>
         </v-row>
       </template>
 
       <div class="position-fixed w-100 bottom-0 right-0 bg-white px-3">
-        <v-row>
-          <v-col cols="10">
-            <v-text-field
-              label="Type a new message"
-              variant="outlined"
-              density="compact"
-              class="mt-4"
-              single-line
-            ></v-text-field>
-          </v-col>
-          <v-col cols="2" align-self="center">
-            <v-btn class="bg-primary-blue text-capitalize font-weight-bold mt-n2 ml-n3">Send</v-btn>
-          </v-col>
-        </v-row>
+        <form @submit.prevent="handleSendMessage">
+          <v-row>
+            <v-col cols="10">
+              <v-text-field
+                v-model="inputMessage"
+                label="Type a new message"
+                variant="outlined"
+                density="compact"
+                class="mt-4"
+                single-line
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2" align-self="center">
+              <v-btn
+                type="submit"
+                class="bg-primary-blue text-capitalize font-weight-bold mt-n2 ml-n3"
+                >Send</v-btn
+              >
+            </v-col>
+          </v-row>
+        </form>
       </div>
     </v-card-text>
   </v-card>
@@ -151,6 +209,5 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
   border-color: #bdbdbd;
   padding: 0;
   width: 100px;
-  margin-left: -80px;
 }
 </style>
