@@ -215,13 +215,9 @@ const handleDeleteMessage = (message: Message) => {
 
                 <v-list density="compact">
                   <v-list-item
-                    v-if="message.first_name === 'You'"
-                    class="text-primary-blue cursor-pointer"
+                    @click="handleDeleteMessage(message)"
+                    class="text-indicator-red cursor-pointer"
                   >
-                    <v-list-item-title>Edit</v-list-item-title>
-                  </v-list-item>
-                  <v-divider></v-divider>
-                  <v-list-item class="text-indicator-red cursor-pointer">
                     <v-list-item-title> Delete </v-list-item-title>
                   </v-list-item>
                 </v-list>
