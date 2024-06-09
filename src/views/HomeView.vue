@@ -4,6 +4,7 @@ import IconPerson from '@/assets/icons/IconPerson.vue'
 import IconTask from '@/assets/icons/IconTask.vue'
 import BaseDialog from '@/components/BaseDialog.vue'
 import TheMessage from '@/components/TheMessage.vue'
+import TheTask from '@/components/TheTask.vue'
 import { reactive, ref } from 'vue'
 import useMessages from '@/composables/useMessages'
 import { useFormatDate } from '@/utils/useFormatDate'
@@ -11,6 +12,9 @@ import { useFormatDate } from '@/utils/useFormatDate'
 const isTaskOpen = ref<boolean>(false)
 const isInboxOpen = ref<boolean>(false)
 const isShowMessage = ref<boolean>(false)
+const isShowTask = ref<boolean>(false)
+const selectedTask = ref('My Tasks')
+const taskItems = ref<string[]>(['My Tasks'])
 
 const { groupedMessages, fetchMessages, isLoading } = useMessages()
 let selectedMessage = reactive<string[]>([])
@@ -18,6 +22,10 @@ let selectedMessage = reactive<string[]>([])
 const handleShowDialog = async (name: string) => {
   if (name == 'task') {
     isTaskOpen.value = !isTaskOpen.value
+
+    setTimeout(() => {
+      isShowTask.value = true
+    }, 1000)
   }
 
   if (name == 'inbox') {
@@ -180,6 +188,42 @@ const handleCloseMessage = () => {
         @close="handleCloseMessage"
         :data="selectedMessage"
       />
+    </BaseDialog>
+
+    <BaseDialog :show="isTaskOpen">
+      <v-container>
+        <v-row justify="space-between">
+          <v-col cols="4" offset="2" align-self="center">
+            <v-select
+              v-model="selectedTask"
+              :items="taskItems"
+              label="Select"
+              variant="outlined"
+              density="compact"
+              single-line
+              style="width: 95%"
+            ></v-select>
+          </v-col>
+          <v-col cols="4" offset="2">
+            <v-btn class="bg-primary-blue text-capitalize font-weight-bold">New Task</v-btn>
+          </v-col>
+        </v-row>
+
+        <div v-if="!isShowTask" class="text-center pa-16">
+          <v-progress-circular
+            indeterminate
+            :size="50"
+            :width="7"
+            color="#C4C4C4"
+            class="mt-16"
+          ></v-progress-circular>
+          <p class="mt-4">Loading Task List ...</p>
+        </div>
+
+        <div v-else>
+          <TheTask></TheTask>
+        </div>
+      </v-container>
     </BaseDialog>
   </main>
 </template>
