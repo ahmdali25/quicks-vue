@@ -102,7 +102,7 @@ const handleSendMessage = () => {
 }
 
 const handleDeleteMessage = (message: Message) => {
-  messages.value = messages.value.filter((msg: Message) => msg !== message)
+  messages.value = messages.value.filter((msg: Message) => msg.id !== message.id)
 
   if (inputMessage.value) {
     inputMessage.value = ''
@@ -204,7 +204,7 @@ const handleDeleteMessage = (message: Message) => {
             <v-col sm="5" md="10" lg="7">
               <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: 100%">
                 {{ message.message }}
-                <p class="mt-1">span{{ useFormatDate(message.date, 'hourOnly') }}</p>
+                <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
               </div>
             </v-col>
             <v-col>
