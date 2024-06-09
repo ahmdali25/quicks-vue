@@ -3,12 +3,15 @@ import { useFormatDate } from '@/utils/useFormatDate'
 import { ref } from 'vue'
 
 interface Message {
+  id: number
   isGroup: Boolean
+  email: string
   groupName: string
   first_name: string
   last_name: string
   date: Date
   message: string
+  isEdited: Boolean
 }
 
 interface PropsMessage {
@@ -18,6 +21,9 @@ interface PropsMessage {
 const props = defineProps<PropsMessage>()
 const messages = ref<Message[]>(props.data)
 const inputMessage = ref<string>('')
+const messageToEdit = ref<Message>()
+const refInputMessage = ref<HTMLInputElement | null>(null)
+const isEdit = ref<boolean>(false)
 
 const emit = defineEmits<{
   (e: 'close', id: boolean): void
@@ -27,7 +33,7 @@ const closeMessage = () => {
   emit('close', false)
 }
 
-const shouldDisplayDate = (message: { date: string }, index: number) => {
+const shouldDisplayDate = (message: Message, index: number) => {
   if (index === 0) {
     return true
   }
@@ -35,16 +41,72 @@ const shouldDisplayDate = (message: { date: string }, index: number) => {
   return useFormatDate(message.date) !== useFormatDate(previousMessage.date)
 }
 
-const handleSendMessage = () => {
+const handleAddMessage = () => {
   messages.value.push({
+    id: messages.value[messages.value.length - 1].id + 1,
     isGroup: false,
     groupName: '',
+    email: 'you@email.com',
     first_name: 'You',
     last_name: '',
     date: new Date(),
-    message: inputMessage.value
+    message: inputMessage.value,
+    isEdited: false
   })
+
   inputMessage.value = ''
+}
+
+const handleSelectMessage = (message: Message) => {
+  const filteredMessage = messages.value.filter((msg: Message) => msg.id === message.id)
+
+  messageToEdit.value = filteredMessage[0]
+
+  if (refInputMessage.value !== null) {
+    refInputMessage.value.focus()
+  }
+
+  inputMessage.value = filteredMessage[0].message
+  isEdit.value = true
+}
+
+const handleEditMessage = () => {
+  if (messageToEdit.value) {
+    const index = messages.value.findIndex((item: Message) => item.id === messageToEdit.value?.id)
+
+    if (index !== -1) {
+      const updatedMessage: Message = {
+        ...messages.value[index],
+        message: inputMessage.value,
+        date: new Date(),
+        isEdited: true
+      }
+
+      messages.value[index] = updatedMessage
+    }
+
+    inputMessage.value = ''
+
+    if (isEdit.value) {
+      isEdit.value = false
+    }
+  }
+}
+
+const handleSendMessage = () => {
+  if (!isEdit.value) {
+    handleAddMessage()
+  } else {
+    handleEditMessage()
+  }
+}
+
+const handleDeleteMessage = (message: Message) => {
+  messages.value = messages.value.filter((msg: Message) => msg !== message)
+
+  if (inputMessage.value) {
+    inputMessage.value = ''
+  }
 }
 </script>
 
@@ -109,11 +171,17 @@ const handleSendMessage = () => {
                     </template>
 
                     <v-list density="compact">
-                      <v-list-item class="text-primary-blue cursor-pointer">
+                      <v-list-item
+                        @click="handleSelectMessage(message)"
+                        class="text-primary-blue cursor-pointer"
+                      >
                         <v-list-item-title>Edit</v-list-item-title>
                       </v-list-item>
                       <v-divider></v-divider>
-                      <v-list-item class="text-indicator-red cursor-pointer">
+                      <v-list-item
+                        @click="handleDeleteMessage(message)"
+                        class="text-indicator-red cursor-pointer"
+                      >
                         <v-list-item-title> Delete </v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -122,7 +190,10 @@ const handleSendMessage = () => {
                 <v-col>
                   <div class="bg-chat-light-purple rounded px-3 py-2 mt-1" style="width: 100%">
                     {{ message.message }}
-                    <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
+                    <p class="mt-1">
+                      <span v-if="message.isEdited">Diedit</span>
+                      {{ useFormatDate(message.date, 'hourOnly') }}
+                    </p>
                   </div>
                 </v-col>
               </v-row>
@@ -133,7 +204,7 @@ const handleSendMessage = () => {
             <v-col sm="5" md="10" lg="7">
               <div class="bg-chat-cream rounded px-3 py-2 mt-1" style="width: 100%">
                 {{ message.message }}
-                <p class="mt-1">{{ useFormatDate(message.date, 'hourOnly') }}</p>
+                <p class="mt-1">span{{ useFormatDate(message.date, 'hourOnly') }}</p>
               </div>
             </v-col>
             <v-col>
@@ -166,6 +237,7 @@ const handleSendMessage = () => {
             <v-col cols="10">
               <v-text-field
                 v-model="inputMessage"
+                ref="refInputMessage"
                 label="Type a new message"
                 variant="outlined"
                 density="compact"
