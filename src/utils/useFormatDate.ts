@@ -20,6 +20,12 @@ export const useFormatDate = (dateString: string | Date, type?: string): string 
       hour: '2-digit',
       minute: '2-digit'
     }
+  } else if (type === 'short') {
+    options = {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    }
   }
 
   const formattedDate = new Intl.DateTimeFormat('id-ID', options).format(date)

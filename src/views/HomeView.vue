@@ -191,7 +191,7 @@ const handleCloseMessage = () => {
     </BaseDialog>
 
     <BaseDialog :show="isTaskOpen">
-      <v-container>
+      <v-container class="pt-0">
         <v-row justify="space-between">
           <v-col cols="4" offset="2" align-self="center">
             <v-select
