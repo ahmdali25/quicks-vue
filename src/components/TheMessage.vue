@@ -24,6 +24,7 @@ const inputMessage = ref<string>('')
 const messageToEdit = ref<Message>()
 const refInputMessage = ref<HTMLInputElement | null>(null)
 const isEdit = ref<boolean>(false)
+const isMessageLoading = ref<boolean>(false)
 
 const emit = defineEmits<{
   (e: 'close', id: boolean): void
@@ -42,6 +43,8 @@ const shouldDisplayDate = (message: Message, index: number) => {
 }
 
 const handleAddMessage = () => {
+  isMessageLoading.value = true
+
   messages.value.push({
     id: messages.value[messages.value.length - 1].id + 1,
     isGroup: false,
@@ -71,6 +74,8 @@ const handleSelectMessage = (message: Message) => {
 }
 
 const handleEditMessage = () => {
+  isMessageLoading.value = true
+
   if (messageToEdit.value) {
     const index = messages.value.findIndex((item: Message) => item.id === messageToEdit.value?.id)
 
@@ -99,6 +104,10 @@ const handleSendMessage = () => {
   } else {
     handleEditMessage()
   }
+
+  setTimeout(() => {
+    isMessageLoading.value = false
+  }, 3000)
 }
 
 const handleDeleteMessage = (message: Message) => {
@@ -239,17 +248,34 @@ const handleDeleteMessage = (message: Message) => {
                 density="compact"
                 class="mt-4"
                 single-line
+                style="width: 103%"
               ></v-text-field>
             </v-col>
             <v-col cols="2" align-self="center">
               <v-btn
                 type="submit"
-                class="bg-primary-blue text-capitalize font-weight-bold mt-n2 ml-n3"
+                class="bg-primary-blue text-capitalize font-weight-bold mt-n2"
+                block
                 >Send</v-btn
               >
             </v-col>
           </v-row>
         </form>
+      </div>
+
+      <div v-if="isMessageLoading" class="position-fixed w-100 right-0 px-6" style="bottom: 85px">
+        <v-row class="bg-sticker-light-blue" justify="center">
+          <v-col cols="1" align-self="center">
+            <v-progress-circular
+              class="text-primary-blue"
+              :size="28"
+              indeterminate
+            ></v-progress-circular>
+          </v-col>
+          <v-col align-self="center">
+            <p>Please wait while we connect you with one of our team ...</p>
+          </v-col>
+        </v-row>
       </div>
     </v-card-text>
   </v-card>
