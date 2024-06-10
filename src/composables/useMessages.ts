@@ -1,9 +1,6 @@
 import { computed, ref } from 'vue'
 import axios, { type AxiosResponse } from 'axios'
-
-const generateRandomDate = (start: Date, end: Date): Date => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-}
+import { useGenerateRandomDate } from '@/utils/useGenerateRandomDate'
 
 const startDate = new Date(2024, 5, 3)
 const endDate = new Date()
@@ -34,7 +31,7 @@ export default function useMessages() {
           isGroup,
           groupName: isGroup ? `Group ${Math.floor(Math.random() * 4) + 1}` : '',
           message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-          date: generateRandomDate(startDate, endDate)
+          date: useGenerateRandomDate(startDate, endDate)
         }
         messages.value.push(message)
       })
